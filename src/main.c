@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#define INSTRUCTION_SIZE 2
 
 typedef struct
 {
@@ -20,7 +21,7 @@ int main()
   for (int i = 0; i < programSize; i++)
   {
 
-    for (int j = 0; j < 2; j++)
+    for (int j = 0; j < INSTRUCTION_SIZE; j++)
     {
       printf("%02x", program[i].code[j]);
     }
@@ -41,8 +42,7 @@ void readRomFile(const char *fileName, Chip8Instruction **program, int *programS
     exit(1);
   }
 
-  const int instructionSize = 2;
-  unsigned char instruction[instructionSize];
+  unsigned char instruction[INSTRUCTION_SIZE];
   size_t bytesRead;
 
   while ((bytesRead = fread(instruction, 1, sizeof(instruction), file)))
@@ -53,11 +53,8 @@ void readRomFile(const char *fileName, Chip8Instruction **program, int *programS
 
     for (int i = 0; i < bytesRead; i++)
     {
-      // printf("%02x", instruction[i]);
       (*program)[*programSize - 1].code[i] = instruction[i];
     }
-
-    // printf("\n");
   }
 
   fclose(file);
