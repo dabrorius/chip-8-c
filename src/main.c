@@ -23,5 +23,7 @@ int main()
     printf("\n");
   }
 
+  free(program);
+
   return 0;
 }
