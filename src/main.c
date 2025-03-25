@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include <SDL2/SDL.h>
 
 #include "load_rom.h"
@@ -22,16 +23,7 @@ int main()
   loadRom("./roms/1-chip8-logo.ch8", &program, &programSize);
 
   // Load ROM into Chip-8 memory starting at position 0x200
-  for (int byteNumber = 0; byteNumber < programSize; byteNumber++)
-  {
-    memory[PROGRAM_LOAD_POSITION + byteNumber] = program[byteNumber];
-    printf("%02x", program[byteNumber]);
-
-    if (byteNumber % 2 == 1)
-    {
-      printf("\n");
-    }
-  }
+  memcpy(&memory[PROGRAM_LOAD_POSITION], program, programSize);
   free(program);
 
   // Print out state of memory
@@ -39,6 +31,16 @@ int main()
   for (int i = 0; i < 4096; i++)
   {
     printf("%02x", memory[i]);
+
+    if ((i + 1) % 2 == 0)
+    {
+      printf(" ");
+    }
+
+    if ((i + 1) % 16 == 0)
+    {
+      printf("\n");
+    }
   }
 
   // Initialize Chip-8 screen

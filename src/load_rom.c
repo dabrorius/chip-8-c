@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "load_rom.h"
 
 void loadRom(const char *fileName, unsigned char **program, int *programSize)
@@ -17,14 +18,9 @@ void loadRom(const char *fileName, unsigned char **program, int *programSize)
 
   while ((bytesRead = fread(instruction, 1, sizeof(instruction), file)))
   {
-
     *program = realloc(*program, (*programSize + bytesRead));
-
-    for (int instructionCharNumber = 0; instructionCharNumber < bytesRead; instructionCharNumber++)
-    {
-      *(*program + *programSize) = instruction[instructionCharNumber];
-      *programSize = *programSize + 1;
-    }
+    memcpy(*program + *programSize, instruction, bytesRead);
+    *programSize += bytesRead;
   }
 
   fclose(file);
