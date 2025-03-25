@@ -8,33 +8,45 @@
 #define SCREEN_WIDTH 64
 #define SCREEN_HEIGHT 32
 #define PIXEL_SIZE 16
+#define PROGRAM_LOAD_POSITION 0x200
 
 int main()
 {
   printf("Welcome to Chippy!\n");
 
-  Chip8Instruction *program = NULL;
-  int programSize = 0;
+  unsigned char memory[4096] = {0};
 
+  // Load ROM into a variable
+  unsigned char *program = NULL;
+  int programSize = 0;
   loadRom("./roms/1-chip8-logo.ch8", &program, &programSize);
 
-  for (int instructionNumber = 0; instructionNumber < programSize; instructionNumber++)
+  // Load ROM into Chip-8 memory starting at position 0x200
+  for (int byteNumber = 0; byteNumber < programSize; byteNumber++)
   {
+    memory[PROGRAM_LOAD_POSITION + byteNumber] = program[byteNumber];
+    printf("%02x", program[byteNumber]);
 
-    for (int instructionCharNumber = 0; instructionCharNumber < INSTRUCTION_SIZE; instructionCharNumber++)
+    if (byteNumber % 2 == 1)
     {
-      printf("%02x", program[instructionNumber].code[instructionCharNumber]);
+      printf("\n");
     }
-
-    printf("\n");
   }
-
   free(program);
 
-  bool screen[SCREEN_WIDTH][SCREEN_HEIGHT] = {false};
+  // Print out state of memory
+  printf("Memory:\n");
+  for (int i = 0; i < 4096; i++)
+  {
+    printf("%02x", memory[i]);
+  }
 
+  // Initialize Chip-8 screen
+  bool screen[SCREEN_WIDTH][SCREEN_HEIGHT] = {false};
   screen[1][1] = true;
   screen[2][1] = true;
+
+  int pc = PROGRAM_LOAD_POSITION;
 
   SDL_Init(SDL_INIT_VIDEO);
 

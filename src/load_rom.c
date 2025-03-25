@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "load_rom.h"
 
-void loadRom(const char *fileName, Chip8Instruction **program, int *programSize)
+void loadRom(const char *fileName, unsigned char **program, int *programSize)
 {
   FILE *file = fopen(fileName, "rb");
 
@@ -17,13 +17,13 @@ void loadRom(const char *fileName, Chip8Instruction **program, int *programSize)
 
   while ((bytesRead = fread(instruction, 1, sizeof(instruction), file)))
   {
-    *programSize = *programSize + 1;
 
-    *program = realloc(*program, *programSize * sizeof(Chip8Instruction));
+    *program = realloc(*program, (*programSize + bytesRead));
 
     for (int instructionCharNumber = 0; instructionCharNumber < bytesRead; instructionCharNumber++)
     {
-      (*program)[*programSize - 1].code[instructionCharNumber] = instruction[instructionCharNumber];
+      *(*program + *programSize) = instruction[instructionCharNumber];
+      *programSize = *programSize + 1;
     }
   }
 

@@ -8,6 +8,6 @@ typedef struct
   unsigned char code[4];
 } Chip8Instruction;
 
-void loadRom(const char *fileName, Chip8Instruction **program, int *programSize);
+void loadRom(const char *fileName, unsigned char **program, int *programSize);
 
 #endif
