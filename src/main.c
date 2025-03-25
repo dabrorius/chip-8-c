@@ -59,8 +59,15 @@ int main()
   SDL_Event event;
   int running = 1;
 
+  unsigned char currentInstruction[INSTRUCTION_SIZE];
+
   while (running)
   {
+    memcpy(&currentInstruction, &memory[pc], INSTRUCTION_SIZE);
+    pc += INSTRUCTION_SIZE;
+
+    printf("\n-> %02x%02x", currentInstruction[0], currentInstruction[1]);
+
     while (SDL_PollEvent(&event))
     {
       if (event.type == SDL_QUIT)
