@@ -30,16 +30,16 @@ int main()
   printf("Memory:\n");
   for (int i = 0; i < 4096; i++)
   {
+    if ((i + 1) % 16 == 0)
+    {
+      printf("\n%04x: ", i);
+    }
+
     printf("%02x", memory[i]);
 
     if ((i + 1) % 2 == 0)
     {
       printf(" ");
-    }
-
-    if ((i + 1) % 16 == 0)
-    {
-      printf("\n");
     }
   }
 
@@ -66,7 +66,23 @@ int main()
     memcpy(&currentInstruction, &memory[pc], INSTRUCTION_SIZE);
     pc += INSTRUCTION_SIZE;
 
-    printf("\n-> %02x%02x", currentInstruction[0], currentInstruction[1]);
+    char c1 = currentInstruction[0] / 0x10;
+    char c2 = currentInstruction[0] % 0x10;
+    char c3 = currentInstruction[1] / 0x10;
+    char c4 = currentInstruction[1] % 0x10;
+
+    printf("\n-> %x%x%x%x", c1, c2, c3, c4);
+
+    if (c1 == 0 && c2 == 0 && c3 == 0xE && c4 == 0)
+    {
+      for (int column = 0; column < SCREEN_WIDTH; column++)
+      {
+        for (int row = 0; row < SCREEN_HEIGHT; row++)
+        {
+          screen[column][row] = false;
+        }
+      }
+    }
 
     while (SDL_PollEvent(&event))
     {
