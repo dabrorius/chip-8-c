@@ -6,10 +6,8 @@
 
 #include "load_rom.h"
 #include "instructions/ins_clear_screen.h"
+#include "screen_config.h"
 
-#define SCREEN_WIDTH 64
-#define SCREEN_HEIGHT 32
-#define PIXEL_SIZE 16
 #define PROGRAM_LOAD_POSITION 0x200
 
 int main()
@@ -74,7 +72,7 @@ int main()
     char c4 = currentInstruction[1] % 0x10;
 
     char matchedHandler = false;
-    matchedHandler = matchedHandler || INS_clearScreen(&c1, &c2, &c3, &c4, screen, SCREEN_WIDTH, SCREEN_HEIGHT);
+    matchedHandler = matchedHandler || INS_clearScreen(&c1, &c2, &c3, &c4, screen);
 
     if (!matchedHandler)
     {
