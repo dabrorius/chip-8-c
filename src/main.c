@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 
 #include "load_rom.h"
+#include "instructions/ins_clear_screen.h"
 
 #define SCREEN_WIDTH 64
 #define SCREEN_HEIGHT 32
@@ -30,7 +31,7 @@ int main()
   printf("Memory:\n");
   for (int i = 0; i < 4096; i++)
   {
-    if ((i + 1) % 16 == 0)
+    if (i % 16 == 0)
     {
       printf("\n%04x: ", i);
     }
@@ -42,6 +43,7 @@ int main()
       printf(" ");
     }
   }
+  printf("\n---- ---- ----\n");
 
   // Initialize Chip-8 screen
   bool screen[SCREEN_WIDTH][SCREEN_HEIGHT] = {false};
@@ -71,17 +73,13 @@ int main()
     char c3 = currentInstruction[1] / 0x10;
     char c4 = currentInstruction[1] % 0x10;
 
-    printf("\n-> %x%x%x%x", c1, c2, c3, c4);
+    char matchedHandler = false;
+    matchedHandler = matchedHandler || INS_clearScreen(&c1, &c2, &c3, &c4, screen, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    if (c1 == 0 && c2 == 0 && c3 == 0xE && c4 == 0)
+    if (!matchedHandler)
     {
-      for (int column = 0; column < SCREEN_WIDTH; column++)
-      {
-        for (int row = 0; row < SCREEN_HEIGHT; row++)
-        {
-          screen[column][row] = false;
-        }
-      }
+      fprintf(stderr, "Unknown instruction '%x%x%x%x'!\n", c1, c2, c3, c4);
+      exit(1);
     }
 
     while (SDL_PollEvent(&event))
